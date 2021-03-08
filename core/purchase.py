@@ -18,7 +18,7 @@ import pickle
 start_time = time.time()
 def get_timeout(timeout=20):
     return time.time() + timeout
-# url = 'https://www.newegg.com/gigabyte-geforce-gtx-150-ti-gv-n15td5-4gd/p/N82E16814125916?Description=video%20card&cm_re=video_card-_-14-125-916-_-Product&quicklink=true'
+# url = 'https://www.newegg.com/amd-ryzen-5-3600/p/N82E16819113569'
 def work(url):
     options = webdriver.ChromeOptions() 
     options.add_argument("start-maximized")
@@ -85,7 +85,7 @@ def work(url):
             pass
         WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div[1]/section/div/div/form/div[2]/div[3]/div/div/div[3]/div/button'))).click()
         
-        WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="labeled-input-password"]'))).send_keys('Cinquant15')
+        WebDriverWait(web,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="labeled-input-password"]'))).send_keys('Cinquant15')
         web.find_element_by_xpath('//*[@id="signInSubmit"]').click()
         
         WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div/section/div/div/form/div[2]/div[1]/div/div[1]/div/div[3]/button'))).click()
