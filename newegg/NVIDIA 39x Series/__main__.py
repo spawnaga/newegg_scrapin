@@ -91,7 +91,9 @@ while True:
         rtx_items = get_rtx_items(tree)
         
         for i in range(len(rtx_items)):
-            value = Decimal(sub(r'[^\d.]', '', rtx_items[i]['price']))
+            if rtx_items[i]['price'] == '':
+                continue
+            value = float(Decimal(sub(r'[^\d.]', '', rtx_items[i]['price'])))
         
             if 100 < value < 2500 and not rtx_items[i]['stock'] == "OUT OF STOCK":
                 
