@@ -14,8 +14,8 @@ from decimal import Decimal
 import time
 
 NEWEGG_URL = "https://newegg.com"
-NEWEGG_RTX_PATH = "/p/pl?N=100007709%20601359511&PageSize=96"
-
+NEWEGG_RTX_PATH = "/p/pl?N=100007709%20601359511%20601357282%204814%208000&PageSize=96"
+# NEWEGG_RTX_PATH = "/p/pl?d=gpus&N=8000%204814%20601357282%20100007709&PageSize=96"
 
 
 def clean_price(price):
@@ -82,18 +82,32 @@ def get_rtx_items(tree):
 
     return items
 
+f = open(r"C:\Projects\newegg_scrapin\core\Webshare 1000 proxies.txt", "r")
+ip = f.readline()
 
 while True:
     try:
+        proxies = {
+         "http": ip[:-1],
+         "https": ip[:-1],
+        }
         crawl_url = f"{NEWEGG_URL}{NEWEGG_RTX_PATH}"
-        html = crawler.crawl_html(crawl_url)
+        try:
+            html = crawler.crawl_html(crawl_url, proxies)
+        except:
+            ip = f.readline()
+            continue
         tree = scraper.get_tree(html)
         rtx_items = get_rtx_items(tree)
-        
+        print(len(rtx_items))
+        if len(rtx_items) == 0:
+            ip = f.readline()
+            print('proxy ip is blocked/malfunction switching/skipping to a different proxy')
+            continue
         for i in range(len(rtx_items)):
-            value = Decimal(sub(r'[^\d.]', '', rtx_items[i]['price']))
+            value = float(Decimal(sub(r'[^\d.]', '', rtx_items[i]['price']))) if rtx_items[i]['price'] != "" else 0
         
-            if 100 < value < 2000 and not 'open' in rtx_items[i]['name'] and not rtx_items[i]['stock'] == "OUT OF STOCK":
+            if 100< value < 2400 and not 'open' in rtx_items[i]['name'] and not rtx_items[i]['stock'] == "OUT OF STOCK":
                 
                 print(f"{rtx_items[i]['name']}: {rtx_items[i]['stock']}")
                 print("link : {rtx_items[i]['link']}")
@@ -101,7 +115,11 @@ while True:
                 print(value)
                 purchase.work(rtx_items[i]['link'])
             
-        time.sleep(5)
+        time.sleep(2)
     except Exception as e:
         print(e)
         print('connection interrupted, trying again')
+        
+    except KeyboardInterrupt:
+        break
+        

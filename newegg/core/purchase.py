@@ -18,7 +18,7 @@ import pickle
 start_time = time.time()
 def get_timeout(timeout=20):
     return time.time() + timeout
-url = 'https://www.newegg.com/amd-ryzen-5-3600/p/N82E16819113569'
+# url = 'https://www.newegg.com/amd-ryzen-5-3600/p/N82E16819113569'
 def work(url):
     options = webdriver.ChromeOptions() 
     options.add_argument("start-maximized")
@@ -29,6 +29,7 @@ def work(url):
     tries = 1
     tried = 0
     cookies = pickle.load(open(r"C:\Projects\newegg_scrapin\newegg\core\cookies.pkl", "rb"))
+                                
     web.get('https://www.newegg.com/')
     for cookie in cookies:
         web.add_cookie(cookie)
@@ -66,7 +67,7 @@ def work(url):
             except:
                 pass
             try:
-                WebDriverWait(web,0.2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
+                WebDriverWait(web,0.5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
             except:
                 pass
             try:
@@ -75,8 +76,8 @@ def work(url):
                 pass
             
             try:
-                WebDriverWait(web,0.2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div/div[3]/button[1]'))).click()
-                WebDriverWait(web,0.2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
+                WebDriverWait(web,0.5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div/div[3]/button[1]'))).click()
+                WebDriverWait(web,0.5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
             except:
                 return
     
@@ -96,15 +97,15 @@ def work(url):
             time.sleep(0.8)
             WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div/section/div/div/form/div[2]/div[1]/div/div[3]/div/div[2]/div/div[3]/div[2]/div[3]/div[1]/div/label/div[4]/input'))).send_keys(Keys.BACKSPACE,Keys.BACKSPACE,Keys.BACKSPACE,Keys.BACKSPACE,'743')
             WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div/section/div/div/form/div[2]/div[1]/div/div[3]/div/div[3]/button'))).click()
-            time.sleep(1)
+            time.sleep(0.8)
             WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="btnCreditCard"]'))).click()
             break
-    
-        if stock == 'OUT OF STOCK':
-            print('Item sold out, better luck next time')
         except:
             return
+    if stock == 'OUT OF STOCK':
+        print('Item sold out, better luck next time')
+
     
     
-work(url)
+# work(url)
 print("--- %s seconds ---" % (time.time() - start_time))
