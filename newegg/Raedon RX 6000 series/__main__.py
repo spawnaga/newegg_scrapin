@@ -14,7 +14,7 @@ from decimal import Decimal
 import time
 
 NEWEGG_URL = "https://newegg.com"
-NEWEGG_RTX_PATH = "f"
+NEWEGG_RTX_PATH = "/p/pl?d=gpus&N=8000%204814%20601357282%20100007709%20601359511&PageSize=96"
 # NEWEGG_RTX_PATH = "/p/pl?d=gpus&N=8000%204814%20601357282%20100007709&PageSize=96"
 
 
