@@ -16,7 +16,7 @@ import time
 import pickle
 
 start_time = time.time()
-def get_timeout(timeout=20):
+def get_timeout(timeout=50):
     return time.time() + timeout
 #url = 'https://www.newegg.com/amd-ryzen-5-3600/p/N82E16819113569'
 def work(url):
@@ -46,6 +46,13 @@ def work(url):
     if stock == 'OUT OF STOCK':
         print('Out of stock, better luck next time')
         return
+    else:
+        while True:
+            try:
+                WebDriverWait(web,2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="ProductBuy"]/div/div[2]/button'))).click()
+                break
+            except:
+                web.refresh()
 
     timeout = get_timeout()
     tried = 0
@@ -57,9 +64,6 @@ def work(url):
             tried +=1
             if time.time() > timeout:
                 break
-            time.sleep(0.5)
-            
-            web.find_element_by_xpath('//*[@id="ProductBuy"]/div/div[2]/button').click()
             try:
                 web.find_element_by_xpath('//*[@id="modal-pc-builder-check"]/div/div/div/div/div/div/div[2]').click()
                 return
