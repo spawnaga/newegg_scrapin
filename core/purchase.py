@@ -16,14 +16,17 @@ import time
 import pickle
 
 start_time = time.time()
-def get_timeout(timeout=50):
+def get_timeout(timeout=120):
     return time.time() + timeout
-#url = 'https://www.newegg.com/amd-ryzen-5-3600/p/N82E16819113569'
+# url = 'https://www.newegg.com/amd-ryzen-7-3700x/p/N82E16819113567?Item=N82E16819113567&quicklink=true'
 def work(url):
-    options = webdriver.ChromeOptions() 
+    options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
+    # options = Options()
+    # options.add_argument('--headless')
+    # options.add_argument('--disable-gpu')
     timeout = get_timeout()
-    options.add_argument(r"C:\Users\Ghailb\AppData\Local\Google\Chrome\User Data\Default") #Path to your chrome profile
+    # options.add_argument(r"C:\Users\Ghailb\AppData\Local\Google\Chrome\User Data\Default") #Path to your chrome profile
     chrome_driver_exe_path = r"C:\chromedriver.exe"
     web = webdriver.Chrome(executable_path=chrome_driver_exe_path, options=options)
     tries = 1
@@ -47,13 +50,23 @@ def work(url):
         print('Out of stock, better luck next time')
         return
     else:
+        tries = 0
         while True:
             try:
-                WebDriverWait(web,2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="ProductBuy"]/div/div[2]/button'))).click()
+                tries +=1
+                WebDriverWait(web,3).until(EC.presence_of_element_located((By.XPATH,'//*[@id="ProductBuy"]/div/div[2]/button'))).click()
                 break
             except:
-                web.refresh()
+                if tries > 3:
+                    web.refresh()
+                    continue
+                return
 
+
+    try:
+        WebDriverWait(web,3).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div/div[3]/button[1]'))).click()
+    except:
+        pass
     timeout = get_timeout()
     tried = 0
     while not stock == 'OUT OF STOCK':
@@ -64,35 +77,61 @@ def work(url):
             tried +=1
             if time.time() > timeout:
                 break
+            # try:
+            #     web.find_element_by_xpath('//*[@id="modal-pc-builder-check"]/div/div/div/div/div/div/div[2]').click()
+            # except:
+            #     pass
             try:
-                web.find_element_by_xpath('//*[@id="modal-pc-builder-check"]/div/div/div/div/div/div/div[2]').click()
-                return
+                WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
             except:
                 pass
             try:
-                WebDriverWait(web,0.2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
+                WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div/div[3]/button[1]'))).click()
             except:
                 pass
             try:
-                web.find_element_by_xpath('//*[@id="Popup_Masks"]/div/div/div[3]/div[2]/button[1]').click()
+                WebDriverWait(web,2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div[1]/section/div/div/form/div[2]/div[3]/div/div/div[3]/div/button'))).click()
+            except:
+                try:
+                    WebDriverWait(web,2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="Popup_Masks"]/div/div/div[3]/div[2]/button[1]'))).click()
+                except:
+                    pass
+                try:
+                    WebDriverWait(web,3).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div[1]/section/div/div/form/div[2]/div[3]/div/div/div[3]/div/button'))).click()
+                except:
+                    pass
+                try:
+                    WebDriverWait(web,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="labeled-input-password"]'))).send_keys('Cinquant15')
+                    WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="signInSubmit"]'))).click()
+                except:
+                    code = utils.get_login_code()
+                    WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div/div[2]/div/div/div[3]/form/div/div[3]/div/input[1]'))).send_keys(code)
+                    web.find_element_by_xpath('//*[@id="signInSubmit"]').click()
+                try:
+                    WebDriverWait(web,2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div/div[3]/button[1]'))).click()
+                    WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
+                except:
+                    # try:
+                    #     WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
+                    # except:
+                    pass
+                try:
+                    WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="Popup_Masks"]/div/div/div[3]/div[2]/button[1]'))).click()
+                    # WebDriverWait(web,2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div[1]/section/div/div/form/div[2]/div[3]/div/div/div[3]/div/button'))).click()
+                except:
+                    pass
+                time.sleep(0.5)
+                
+            # try:
+            #     WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="labeled-input-signEmail"]'))).send_keys('ali.ghalibe@hotmail.com')
+            #     web.find_element_by_xpath('//*[@id="signInSubmit"]').click()
+            # except: 
+            #     pass
+            try:
+                WebDriverWait(web,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="labeled-input-password"]'))).send_keys('Cinquant15')
+                web.find_element_by_xpath('//*[@id="signInSubmit"]').click()
             except:
                 pass
-            
-            try:
-                WebDriverWait(web,0.2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div/div[3]/button[1]'))).click()
-                WebDriverWait(web,0.2).until(EC.presence_of_element_located((By.XPATH,'//*[@id="modal-intermediary"]/div/div/div[2]/div[2]/button[2]'))).click()
-            except:
-                return
-    
-            try:
-                web.find_element_by_xpath('//*[@id="Popup_Masks"]/div/div/div[3]/div[2]/button[1]').click()
-            except:
-                pass
-            WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div[1]/section/div/div/form/div[2]/div[3]/div/div/div[3]/div/button'))).click()
-            
-            WebDriverWait(web,10).until(EC.presence_of_element_located((By.XPATH,'//*[@id="labeled-input-password"]'))).send_keys('Cinquant15')
-            web.find_element_by_xpath('//*[@id="signInSubmit"]').click()
-            
             WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div/section/div/div/form/div[2]/div[1]/div/div[1]/div/div[3]/button'))).click()
             time.sleep(0.8)
             element = web.find_element_by_xpath('//*[@id="app"]/div/section/div/div/form/div[2]/div[1]/div/div[2]/div/div[3]/button')
@@ -102,6 +141,7 @@ def work(url):
             WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="app"]/div/section/div/div/form/div[2]/div[1]/div/div[3]/div/div[3]/button'))).click()
             time.sleep(1)
             WebDriverWait(web,1).until(EC.presence_of_element_located((By.XPATH,'//*[@id="btnCreditCard"]'))).click()
+            print('all went well')
             break
         except:
             return
@@ -110,5 +150,5 @@ def work(url):
 
     
     
-#work(url)
+# work(url)
 print("--- %s seconds ---" % (time.time() - start_time))

@@ -14,7 +14,7 @@ from decimal import Decimal
 import time
 
 NEWEGG_URL = "https://newegg.com"
-NEWEGG_RTX_PATH = "/p/pl?d=gpus&N=8000%204814%20601357282%20100007709%20601359511&PageSize=96"
+NEWEGG_RTX_PATH = "/p/pl?d=gpus&N=8000%204814%20601357282%20100007709&PageSize=96"
 # NEWEGG_RTX_PATH = "/p/pl?d=gpus&N=8000%204814%20601357282%20100007709&PageSize=96"
 
 
@@ -65,14 +65,18 @@ def get_rtx_items(tree):
     ids = get_rtx_ids(tree)
     stock_details = get_rtx_stock_information(tree)
     items = []
+    releasing_time = time.ctime()
 
     for index, price in enumerate(prices):
         name = names[index]
         link = links[index]
         stock = stock_details[index]
         id = ids[index]
+        times = releasing_time
+        
 
         items.append({
+            'time': times,
             'name': name,
             'link': link,
             'stock': stock,
@@ -84,7 +88,7 @@ def get_rtx_items(tree):
 
 f = open(r"C:\Projects\newegg_scrapin\core\Webshare 1000 proxies.txt", "r")
 ip = f.readline()
-
+Purchase_submit ={}
 while True:
     try:
         proxies = {
@@ -107,13 +111,14 @@ while True:
         for i in range(len(rtx_items)):
             value = float(Decimal(sub(r'[^\d.]', '', rtx_items[i]['price']))) if rtx_items[i]['price'] != "" else 0
         
-            if 100< value < 2400 and not 'open' in rtx_items[i]['name'] and not rtx_items[i]['stock'] == "OUT OF STOCK":
+            if 100< value < 2500 and not 'open' in rtx_items[i]['name'] and not rtx_items[i]['stock'] == "OUT OF STOCK":
                 
                 print(f"{rtx_items[i]['name']}: {rtx_items[i]['stock']}")
                 print("link : {rtx_items[i]['link']}")
                 value = Decimal(sub(r'[^\d.]', '', rtx_items[i]['price']))
-                print(value)
+                print(value) 
                 purchase.work(rtx_items[i]['link'])
+                Purchase_submit = rtx_items[i]
             
         time.sleep(2)
     except Exception as e:
